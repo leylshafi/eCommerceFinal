@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
-
-function Product({ brand, price, gallery }) {
+import { useNavigate } from 'react-router-dom';
+function Product({id, brand, price, gallery,size, colors, setCartItems,cartItems }) {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDoubleClick = () => {
+    console.log("double clicked");
+    navigate(`/product/${id}`); 
+  };
+
+  const handleAddToCart = () => {
+    setCartItems(prevItems => [...prevItems, { id, brand, price, gallery, size ,colors}]); 
+    console.log(cartItems);
+  };
 
   return (
     <div
@@ -12,17 +23,21 @@ function Product({ brand, price, gallery }) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {isHovered && (
-        <img
+        <img 
+        onClick={()=>{
+          handleAddToCart()
+          navigate("/mainpage")
+        }}
           src="\src\assets\CircleIcon.svg"
           alt="Add to Cart"
           className={`absolute bottom-32 right-0 p-2 hover:scale-110 transition-transform duration-300 cursor-pointer`}
         />
       )}
 
-      <img src={gallery} alt="" className="w-[354px] h-[330px]" />
+      <img  onDoubleClick={handleDoubleClick} src={gallery} alt="" className="w-[354px] h-[330px]" />
 
       <div>
-        <h3>{brand}</h3>
+        <button>{brand}</button>
         <p>${price}</p>
       </div>
     </div>

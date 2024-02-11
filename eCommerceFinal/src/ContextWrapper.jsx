@@ -9,6 +9,7 @@ export const ContextWrapper = ({ children }) => {
     const [categories, setCategories] = useState([]);
     const [currentCategory, setCurrentCategory] = useState("All");
     const [products, setProducts] = useState([]);
+    const [singleProduct, setSingleProduct] = useState(null);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const navigate = useNavigate();
 
@@ -31,6 +32,20 @@ export const ContextWrapper = ({ children }) => {
         const data = await fetchData("http://localhost:5000/api/products");
         if (data) {
             setProducts(data.product);
+        }
+    };
+
+    const getProductById = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/products/${id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch product');
+            }
+            const data = await response.json();
+            return data.product;
+        } catch (error) {
+            console.error('Error fetching product:', error);
+            return null;
         }
     };
 
@@ -66,7 +81,8 @@ export const ContextWrapper = ({ children }) => {
         filterProducts,
         filteredProducts,
         products,
-        getProducts
+        getProducts,
+        getProductById
     };
 
     return (
